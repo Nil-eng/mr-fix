@@ -1,5 +1,730 @@
-<section class="hero">
-  <video autoplay muted loop playsinline class="bg-video">
-    <source src="videos/intro.mp4" type="video/mp4">
-  </video>
-</section>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mr.Fix - 3D Experience</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0f0f1e;
+            --secondary: #1a1a2e;
+            --accent: #00d4ff;
+            --accent-2: #ff006e;
+            --text: #ffffff;
+            --text-secondary: #a0a0b0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--primary);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* ========== NAVBAR ========== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(15, 15, 30, 0.7);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 50px;
+            z-index: 1000;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .navbar-logo {
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #00d4ff, #ff006e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-logo:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 0 20px rgba(255, 0, 110, 0.8));
+        }
+
+        /* ========== HERO VIDEO SECTION ========== */
+        .hero-section {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            margin-top: 0;
+            overflow: hidden;
+        }
+
+        .video-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(0, 212, 255, 0.1) 0%, 
+                rgba(15, 15, 30, 0.4) 50%, 
+                rgba(255, 0, 110, 0.1) 100%);
+            z-index: 2;
+            animation: pulseOverlay 8s ease-in-out infinite;
+        }
+
+        @keyframes pulseOverlay {
+            0%, 100% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .hero-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+            text-align: center;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -30%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        .hero-title {
+            font-size: 72px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #00d4ff, #ff006e, #00d4ff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 6s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* ========== GALLERY SECTION ========== */
+        .gallery-section {
+            position: relative;
+            padding: 100px 50px;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
+            min-height: 100vh;
+        }
+
+        .gallery-title {
+            text-align: center;
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 80px;
+            background: linear-gradient(135deg, #00d4ff, #ff006e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gallery-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 60px;
+            perspective: 1000px;
+        }
+
+        .gallery-item {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            height: 400px;
+            opacity: 0;
+            transform: translateY(100px) rotateX(-20deg);
+            animation: slideInGallery 0.8s ease-out forwards;
+            cursor: pointer;
+            group: 1;
+        }
+
+        @keyframes slideInGallery {
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateX(0);
+            }
+        }
+
+        .gallery-item:nth-child(1) { animation-delay: 0.1s; }
+        .gallery-item:nth-child(2) { animation-delay: 0.3s; }
+        .gallery-item:nth-child(3) { animation-delay: 0.5s; }
+        .gallery-item:nth-child(4) { animation-delay: 0.7s; }
+        .gallery-item:nth-child(5) { animation-delay: 0.9s; }
+
+        .gallery-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            object-fit: cover;
+            box-shadow: 0 20px 60px rgba(0, 212, 255, 0.2);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.320, 1);
+            filter: brightness(0.85) contrast(1.1);
+        }
+
+        .gallery-item:hover .gallery-image {
+            transform: scale(1.05) rotateY(5deg);
+            box-shadow: 0 30px 80px rgba(0, 212, 255, 0.4), 
+                        0 0 60px rgba(255, 0, 110, 0.3);
+            border-color: rgba(0, 212, 255, 0.8);
+            filter: brightness(1.1) contrast(1.2);
+        }
+
+        .gallery-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, 
+                rgba(15, 15, 30, 0.95), 
+                transparent);
+            padding: 40px 30px 20px;
+            border-radius: 0 0 20px 20px;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            transform: translateY(100%);
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.320, 1);
+        }
+
+        .gallery-item:hover .gallery-label {
+            transform: translateY(0);
+        }
+
+        /* Scroll Animation Trigger */
+        .gallery-item.scroll-animate {
+            animation: slideInGallery 0.8s ease-out forwards;
+        }
+
+        /* ========== 3D PERSPECTIVE EFFECTS ========== */
+        .gallery-item {
+            transform-style: preserve-3d;
+        }
+
+        .gallery-image {
+            transform-style: preserve-3d;
+        }
+
+        /* ========== SMOOTH SCROLL ========== */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0 20px;
+            }
+
+            .navbar-logo {
+                font-size: 20px;
+            }
+
+            .hero-title {
+                font-size: 48px;
+                letter-spacing: 1px;
+            }
+
+            .hero-subtitle {
+                font-size: 14px;
+            }
+
+            .gallery-section {
+                padding: 60px 20px;
+            }
+
+            .gallery-title {
+                font-size: 36px;
+                margin-bottom: 50px;
+            }
+
+            .gallery-item {
+                max-width: 100%;
+                height: 300px;
+            }
+
+            .gallery-label {
+                font-size: 18px;
+            }
+        }
+
+        /* ========== CUSTOM SCROLLBAR ========== */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #00d4ff, #ff006e);
+            border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #ff006e, #00d4ff);
+        }
+
+        /* ========== FLOATING CONTACT ICONS ========== */
+        .floating-contact {
+            position: fixed;
+            right: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 999;
+            bottom: 40px;
+        }
+
+        .contact-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            animation: floatUp 0.8s ease-out backwards;
+        }
+
+        @keyframes floatUp {
+            from {
+                opacity: 0;
+                transform: translateY(100px) scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .contact-icon:nth-child(1) {
+            animation-delay: 0.3s;
+        }
+
+        .contact-icon:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        /* WhatsApp Icon */
+        .whatsapp {
+            background: linear-gradient(135deg, #25d366, #20c856);
+            color: white;
+        }
+
+        .whatsapp::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: left 0.5s ease;
+        }
+
+        .whatsapp:hover::before {
+            left: 100%;
+        }
+
+        .whatsapp:hover {
+            transform: scale(1.15) rotate(5deg);
+            box-shadow: 0 15px 60px rgba(37, 211, 102, 0.6);
+            border-color: rgba(37, 211, 102, 0.8);
+        }
+
+        /* Call Icon */
+        .call {
+            background: linear-gradient(135deg, #ff006e, #ff4d7a);
+            color: white;
+        }
+
+        .call::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: left 0.5s ease;
+        }
+
+        .call:hover::before {
+            left: 100%;
+        }
+
+        .call:hover {
+            transform: scale(1.15) rotate(-5deg);
+            box-shadow: 0 15px 60px rgba(255, 0, 110, 0.6);
+            border-color: rgba(255, 0, 110, 0.8);
+        }
+
+        /* Pulse animation */
+        @keyframes pulse-glow {
+            0%, 100% {
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            }
+            50% {
+                box-shadow: 0 10px 50px rgba(0, 212, 255, 0.2), 0 0 30px rgba(0, 212, 255, 0.1);
+            }
+        }
+
+        .contact-icon {
+            animation: floatUp 0.8s ease-out backwards, pulse-glow 3s ease-in-out infinite;
+        }
+
+        .contact-icon:nth-child(1) {
+            animation: floatUp 0.8s ease-out 0.3s backwards, pulse-glow 3s ease-in-out infinite;
+        }
+
+        .contact-icon:nth-child(2) {
+            animation: floatUp 0.8s ease-out 0.5s backwards, pulse-glow 3s ease-in-out 0.3s infinite;
+        }
+
+        /* Tooltip */
+        .contact-icon .tooltip {
+            position: absolute;
+            right: 80px;
+            background: rgba(15, 15, 30, 0.95);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateX(10px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .contact-icon:hover .tooltip {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Ripple effect on click */
+        .contact-icon .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(0);
+            animation: ripple 0.6s ease-out;
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .floating-contact {
+                right: 20px;
+                bottom: 20px;
+                gap: 15px;
+            }
+
+            .contact-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+            }
+
+            .contact-icon .tooltip {
+                right: 65px;
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="navbar-logo">Mr.Fix</div>
+    </nav>
+
+    <!-- HERO VIDEO SECTION -->
+    <section class="hero-section">
+        <video class="video-background" autoplay muted loop playsinline>
+            <source src="./videos/hero.mp4" type="video/mp4">
+
+            Your browser doesn't support HTML5 video.
+        </video>
+        
+        <div class="video-overlay"></div>
+        
+        <!-- <div class="hero-content">
+            <h1 class="hero-title">MR.FIX</h1>
+            <p class="hero-subtitle">Premium Solutions</p>
+        </div> -->
+    </section>
+
+    <!-- GALLERY SECTION -->
+    <section class="gallery-section">
+        <h2 class="gallery-title">Home Apliance Repair & Service  </h2>
+        <div class="gallery-container">
+            <div class="gallery-item">
+                <img class="gallery-image" src="./images/induction.jpg" loading="lazy" alt="induction Cooktop">
+
+                <div class="gallery-label">Induction Repair and Service</div>
+            </div>
+            
+            <div class="gallery-item">
+                <img class="gallery-image" src="./images/Fan.png" loading="lazy" alt="Ceilling Fan ">
+
+                <div class="gallery-label">Fan installation ,Rpair & Service</div>
+            </div>
+            
+            <div class="gallery-item">
+               <img class="gallery-image" src="./images/chimney.png" loading="lazy" alt="chimney">
+                <div class="gallery-label"> Chimney Repair & Service</div>
+            </div>
+            
+            <div class="gallery-item">
+                <img class="gallery-image" src="./images/iron.jpg" loading="lazy" alt="Iron press ">
+                <div class="gallery-label">Iron Repair & Service</div>
+            </div>
+            
+            <div class="gallery-item">
+                <img class="gallery-image" src="./images/grinder.jpg" loading="lazy" alt="Mixer Grinder ">
+                <div class="gallery-label">Mixer Grinder Repair & Service</div>
+            </div>
+
+            <div class="gallery-item">
+                <img class="gallery-image" src="./images/water heater.jpg" loading="lazy" alt="water heater ">
+                <div class="gallery-label">Geyser Repair & Service</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FLOATING CONTACT ICONS -->
+    <div class="floating-contact">
+        <a href="https://wa.me/8017210459" target="_blank" class="contact-icon whatsapp">
+            <span class="tooltip">WhatsApp</span>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a9.87 9.87 0 00-4.968 1.495c-1.532.946-2.79 2.32-3.687 3.957A9.9 9.9 0 006.444 2.25c2.611 0 5.051 1.007 6.905 2.93 1.854 1.924 2.93 4.546 2.93 7.27 0 2.393-.606 4.655-1.764 6.61m5.108-18.08C11.717.873 6.337.873 2.839 4.382c-1.88 1.9-2.904 4.561-2.904 7.469C0 15.886.975 18.548 2.839 20.407c3.498 3.51 8.877 3.51 12.375 0 1.88-1.859 2.904-4.52 2.904-7.469 0-2.908-1.024-5.569-2.904-7.468"/>
+            </svg>
+        </a>
+
+        <a href="tel:+918017210459" class="contact-icon call">
+            <span class="tooltip">Call Us</span>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>
+            </svg>
+        </a>
+    </div>
+
+    <script>
+        // Smooth scroll reveal animation on scroll
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('scroll-animate');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Observe all gallery items
+        document.querySelectorAll('.gallery-item').forEach(item => {
+            observer.observe(item);
+        });
+
+        // Parallax effect on mouse move
+        document.addEventListener('mousemove', (e) => {
+            const items = document.querySelectorAll('.gallery-item');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+
+            items.forEach(item => {
+                const image = item.querySelector('.gallery-image');
+                const offsetX = (x - 0.5) * 30;
+                const offsetY = (y - 0.5) * 30;
+                
+                image.style.transform = `scale(1.02) translateX(${offsetX}px) translateY(${offsetY}px)`;
+            });
+        });
+
+        // Reset parallax on mouse leave
+        document.addEventListener('mouseleave', () => {
+            document.querySelectorAll('.gallery-image').forEach(image => {
+                image.style.transform = 'scale(1) translateX(0) translateY(0)';
+            });
+        });
+
+        // Enhance scroll animations
+        window.addEventListener('scroll', () => {
+            const items = document.querySelectorAll('.gallery-item');
+            items.forEach((item, index) => {
+                const rect = item.getBoundingClientRect();
+                const scrollPercent = (window.innerHeight - rect.top) / window.innerHeight;
+                
+                if (scrollPercent > 0 && scrollPercent < 1) {
+                    item.style.opacity = Math.min(scrollPercent * 1.5, 1);
+                }
+            });
+        });
+
+        // Click animation on gallery items
+        document.querySelectorAll('.gallery-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                const ripple = document.createElement('div');
+                ripple.style.position = 'absolute';
+                ripple.style.width = '40px';
+                ripple.style.height = '40px';
+                ripple.style.background = 'radial-gradient(circle, rgba(0,212,255,0.8), transparent)';
+                ripple.style.borderRadius = '50%';
+                ripple.style.pointerEvents = 'none';
+                ripple.style.animation = 'rippleEffect 0.6s ease-out';
+                
+                const rect = item.getBoundingClientRect();
+                ripple.style.left = (e.clientX - rect.left - 20) + 'px';
+                ripple.style.top = (e.clientY - rect.top - 20) + 'px';
+                
+                item.appendChild(ripple);
+                
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+
+        // Add ripple animation keyframes
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes rippleEffect {
+                to {
+                    width: 400px;
+                    height: 400px;
+                    opacity: 0;
+                    transform: translate(-50%, -50%);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Floating contact icons ripple effect
+        document.querySelectorAll('.contact-icon').forEach(icon => {
+            icon.addEventListener('click', (e) => {
+                if (e.target.closest('a').target === '_blank' || e.target.closest('a').href.startsWith('tel:')) {
+                    const ripple = document.createElement('div');
+                    ripple.classList.add('ripple');
+                    ripple.style.left = (e.clientX - icon.getBoundingClientRect().left) + 'px';
+                    ripple.style.top = (e.clientY - icon.getBoundingClientRect().top) + 'px';
+                    icon.appendChild(ripple);
+                    
+                    setTimeout(() => ripple.remove(), 600);
+                }
+            });
+        });
+
+        // Add hover animation enhancement
+        document.querySelectorAll('.contact-icon').forEach(icon => {
+            icon.addEventListener('mouseenter', function() {
+                this.style.animation = 'none';
+                setTimeout(() => {
+                    this.style.animation = '';
+                }, 10);
+            });
+        });
+
+        // Navbar scroll effect
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 50) {
+                navbar.style.background = 'rgba(15, 15, 30, 0.85)';
+                navbar.style.borderBottomColor = 'rgba(0, 212, 255, 0.2)';
+            } else {
+                navbar.style.background = 'rgba(15, 15, 30, 0.7)';
+                navbar.style.borderBottomColor = 'rgba(0, 212, 255, 0.1)';
+            }
+            
+            lastScroll = currentScroll;
+        });
+    </script>
+</body>
+</html>
